@@ -17,7 +17,7 @@ int main (int argc, char* argv[])
 	else
 		n = 6;
 
-	if (id != 0)
+	if (id != 0)		// This is the Parent it should wait for children !
 		wait(NULL);
 
 	int i;
@@ -29,6 +29,7 @@ int main (int argc, char* argv[])
 	}
 
 	if (id != 0) printf("\n");
+
 	return (0);
 }
 

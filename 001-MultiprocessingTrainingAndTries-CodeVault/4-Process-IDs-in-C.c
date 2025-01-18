@@ -10,13 +10,13 @@ int main (int argc, char* argv[])
 {
 	int id = fork();
 
-	if (id == 0)
+	if (id == 0)		// If You are child sleep 1 Second!
 		sleep(1);
-	printf("Current ID: (%d), Parent ID: (%d)\n", getpid(), getppid());
+	printf("Current ID: (%d), Parent ID: (%d)\n", getpid(), getppid());	    // getpid() -> Get process id --- getppid() ->Then get Parent ID 
 
 
 	int wait_id;
-	wait_id = wait(NULL);
+	wait_id = wait(NULL);	//	As Parent Proccess : Wait for Child	
 	if(wait_id == -1)
 		printf("No children to wait for \n");
 	else

@@ -1,0 +1,124 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+' Enhance visualization styling for a professional look
+skinparam backgroundColor #FDF6E3
+skinparam sequence {
+    ArrowColor #2C3E50
+    LifeLineBorderColor #2C3E50
+    LifeLineBackgroundColor #ECF0F1
+    ParticipantBorderColor #2C3E50
+    ParticipantBackgroundColor #FFF
+}
+skinparam lifelineStrategy single
+hide footbox
+
+title Process Fork, Wait, and Zombie Prevention Visualization
+
+' --- Code Execution Begins ---
+participant "Main Process" as MP
+
+' The fork() call: splitting execution into two processes
+MP -> MP: int id = fork()
+note right of MP: fork() creates two execution flows:\n• Child Process (id == 0)\n• Parent Process (id != 0)
+
+' ---- Child Process Flow (id == 0) ----
+alt Child Process (id == 0)
+    participant "Child Process" as CP
+    note right of CP: In Child Process:\n- Executes ( sleep(1) ) to simulate delay\n- Delay may allow parent to finish first,\n  risking zombie creation\n- Memory isn’t freed if the child remains active!
+    MP -> CP: sleep(1)
+    CP -> CP: printf("Current ID: (%d)\\nParent ID: (%d)")
+    note right of CP: After printing, the child terminates.\nIf not reaped properly, it becomes a zombie.
+else 
+    ' ---- Parent Process Flow (id != 0) ----
+    participant "Parent Process" as PP
+    note right of PP: In Parent Process:\n- Prints its own IDs immediately\n- Must wait for child termination to avoid zombies\n- Rule: Always wait for child before terminating.
+    MP -> PP: printf("Current ID: (%d)\\nParent ID: (%d)")
+    PP -> PP: wait(NULL)
+    note right of PP: wait(NULL) blocks the parent until the child finishes,\npreventing zombie processes and ensuring memory cleanup.
+end alt
+
+' --- Alternative Approach: Checking wait() Result ---
+group Check wait() return value
+    note over MP: Optionally, store the wait() result to check which child terminated.
+    MP -> MP: int wait_res = wait(NULL)
+    alt Successful wait
+        note right: wait() returns the child’s PID,\nindicating the child finished execution.
+        MP -> MP: printf("(%d) process finished execution!", wait_res)
+    else No Child
+        note right: wait() returns -1 when there are no child processes.
+        MP -> MP: printf("No Children to wait for")
+    end alt
+end group
+
+note over MP: **Key Points:**\n• Every child must have a parent.\n• If a parent terminates before its child, the child is reparented (often to init) and may become a zombie.\n• Not freeing a non-terminated child’s memory can lead to leaks.\n• Using wait(NULL) ensures orderly termination and resource cleanup.
+
+@enduml
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+' @startuml
+' !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4.puml
+' !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+' ' Enhance visualization styling
+' skinparam backgroundColor #FDF6E3
+' skinparam sequence {
+'     ArrowColor #2C3E50
+'     LifeLineBorderColor #2C3E50
+'     LifeLineBackgroundColor #ECF0F1
+'     ParticipantBorderColor #2C3E50
+'     ParticipantBackgroundColor #FFF
+' }
+' skinparam lifelineStrategy single
+' hide footbox
+
+' title Process Fork Visualization
+
+' ' Main process (No duplication)
+' actor "Main Process" as MP
+
+' ' Fork process
+' MP -> MP: fork()
+
+' alt Parent Process
+'     note right: fork() returns parent's PID
+'     participant "Parent Process\nPID: [getpid()]" as Parent
+'     MP -> Parent: Execute parent's branch
+'     Parent -> Parent: print(getpid())
+' else Child Process
+'     participant "Child Process\nPID: [getpid()]" as Child
+'     note right of Child: fork() returns 0 in child
+'     MP -> Child: Execute child's branch
+'     Child -> Child: print(getpid())
+' end alt
+
+' @enduml

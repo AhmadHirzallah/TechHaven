@@ -1,0 +1,95 @@
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+'---------------- Global Styling ----------------
+skinparam lifelineStrategy single
+hide footbox
+skinparam backgroundColor #FDF6E3
+skinparam sequence {
+    ArrowColor #2C3E50
+    LifeLineBorderColor #2C3E50
+    LifeLineBackgroundColor #ECF0F1
+    ParticipantBorderColor #2C3E50
+    ParticipantBackgroundColor #FFF
+}
+
+title Comprehensive Forking & Waiting Explanation
+
+'================================================
+'             PAGE 1: id1/id2 FORKING
+'================================================
+== First Program: (id1 = fork(); id2 = fork();) ==
+
+participant "Original Main" as MAIN
+
+' Step 1: id1 = fork()
+MAIN -> MAIN: id1 = fork()
+note right of MAIN
+  Splits into:
+  • Parent (id1 != 0)
+  • Child  (id1 == 0)
+end note
+
+' Step 2: id2 = fork() in each of those processes
+MAIN -> MAIN: id2 = fork()
+note right of MAIN
+  Each of the 2 processes calls fork() again -> total 4 processes:
+  1) Parent:  (id1 != 0, id2 != 0)
+  2) x:       (id1 == 0, id2 != 0)
+  3) z:       (id1 != 0, id2 == 0)
+  4) y:       (id1 == 0, id2 == 0)
+end note
+
+' Use alt to label each final process
+alt (id1 == 0 and id2 == 0)
+    note right: "We are process (y)"
+else (id1 == 0 and id2 != 0)
+    note right: "We are process (x)"
+else (id1 != 0 and id2 == 0)
+    note right: "We are process (z)"
+else (id1 != 0 and id2 != 0)
+    note right: "We are the (Parent) process"
+end alt
+
+' Waiting for all child processes
+note over MAIN
+  After these forks, each process runs:
+  
+    while (wait(NULL) != -1 || errno != ECHILD)
+        printf("Waited for a child to finish !!!\\n");
+  
+  Explanation:
+  • wait(NULL) reaps one child if available; returns its PID or -1 on error.
+  • If it returns -1 and errno == ECHILD, there are NO more children to reap.
+  • If errno != ECHILD, the error might be something else, so we keep trying.
+  • This loop ensures that each process that DOES have children won't stop
+    waiting after reaping just one child, preventing zombie processes.
+end note
+
+
+'================================================
+'           PAGE 2: 2^10 PROCESSES
+'================================================
+newpage
+== Second Program: for (int i = 0; i < 10; i++) fork(); ==
+
+actor "Initial Main Process" as IMP
+
+IMP -> IMP: for (i = 0; i < 10; i++) fork()
+note right of IMP
+  Each iteration:
+   1) We start with N processes.
+   2) Each calls fork(), doubling to 2N.
+   3) After 10 iterations: 2^10 = 1024 processes.
+
+  This can overload the system if not handled carefully.
+  Usually, you only want the "Main" or a controlled set of processes to fork,
+  NOT every process in existence.
+end note
+
+note over IMP
+  Without a proper wait() in each parent, children can become zombies.
+  A large number of processes can cause resource exhaustion.
+end note
+
+@enduml

@@ -5,11 +5,14 @@
 
 
 # FILE ?= 1_fork.c
-# FILE ?= 2_waiting_processes_finishing.c 
+# FILE ?= 2_waiting_processes_finishing.c
 # FILE ?= 3_Process_IDs.c
 # FILE ?= 5_Communicating_between_processes_using_pipes.c
 # FILE ?= 6_Practical_use_case_for_fork_and_pipe.c
-FILE ?= 7_Introduction_to_FIFOs_aka_named_pipes.c
+# FILE ?= 7_Introduction_to_FIFOs_aka_named_pipes.c
+# FILE ?= 9_Two_way_communication_between_processes_using_pipes.c
+FILE ?= 10_execute_another_program.c
+
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g

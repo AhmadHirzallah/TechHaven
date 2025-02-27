@@ -1,5 +1,7 @@
 {
 	"files.associations": {
-		"format": "c"
+		"format": "c",
+		"time.h": "c",
+		"stdlib.h": "c"
 	}
 }

@@ -11,7 +11,15 @@
 # FILE ?= 6_Practical_use_case_for_fork_and_pipe.c
 # FILE ?= 7_Introduction_to_FIFOs_aka_named_pipes.c
 # FILE ?= 9_Two_way_communication_between_processes_using_pipes.c
-FILE ?= 10_execute_another_program.c
+# FILE ?= 10_execute_another_program.c
+# FILE ?= 11_Executing_commands.c 
+# FILE ?= 12_GettingExitStatusCode.c 
+# FILE ?= 13_RedirectingStandardOutput.c
+# FILE ?= 14_ExecutingProgramsVSExecutingScripts.c
+# FILE ?= 15_introduction_to_signals.c 
+FILE ?= 16_StoppingAndContinuingTheExecutionOfAProcessUsingSIGCONT_SIGSTOP.c
+
+
 
 
 CC = cc

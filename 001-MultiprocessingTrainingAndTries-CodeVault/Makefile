@@ -17,7 +17,10 @@
 # FILE ?= 13_RedirectingStandardOutput.c
 # FILE ?= 14_ExecutingProgramsVSExecutingScripts.c
 # FILE ?= 15_introduction_to_signals.c 
-FILE ?= 16_StoppingAndContinuingTheExecutionOfAProcessUsingSIGCONT_SIGSTOP.c
+# FILE ?= 16_StoppingAndContinuingTheExecutionOfAProcessUsingSIGCONT_SIGSTOP.c
+# FILE ?= 17_BackgroundAndForegroundProcesses.c
+FILE ?= 18_HandlingSignals.c 
+# FILE ?= 19_CommunicatingBetweenProcessesUsingSignals.c
 
 
 

@@ -19,8 +19,16 @@
 # FILE ?= 15_introduction_to_signals.c 
 # FILE ?= 16_StoppingAndContinuingTheExecutionOfAProcessUsingSIGCONT_SIGSTOP.c
 # FILE ?= 17_BackgroundAndForegroundProcesses.c
-FILE ?= 18_HandlingSignals.c 
+# FILE ?= 18_HandlingSignals.c 
 # FILE ?= 19_CommunicatingBetweenProcessesUsingSignals.c
+# FILE ?=	20_SendAnArrayThroughPipe.c 
+# FILE ?=	21_SendStringThroughPipe.c
+# FILE ?=	22_SimulatingThePipeOperator.c
+# FILE ?=	23_WorkingWithMultiplePipes.c
+# FILE ?=	24_WhatForkActuallyReturn.c
+# FILE ?=	25_WhatIsWaitpid.c
+FILE ?=	26_CallingForkMultipleTimesWithPracticalExample.c
+
 
 
 

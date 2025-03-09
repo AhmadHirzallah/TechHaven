@@ -27,7 +27,8 @@
 # FILE ?=	23_WorkingWithMultiplePipes.c
 # FILE ?=	24_WhatForkActuallyReturn.c
 # FILE ?=	25_WhatIsWaitpid.c
-FILE ?=	26_CallingForkMultipleTimesWithPracticalExample.c
+# FILE ?=	26_CallingForkMultipleTimesWithPracticalExample.c
+FILE ?=	27_errorPrinting.c
 
 
 

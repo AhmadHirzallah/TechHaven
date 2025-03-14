@@ -2,6 +2,12 @@
 #include "libft.h"
 #include "stdio.h"
 
+void	termination_with_all_closing(t_pipex *pipex_info, t_returns_exits exit_code, int i)
+{
+	close_all_pipes(&(pipex_info->pipes), i);
+	close_io_files(&(pipex_info->files));
+	terminate_pipex(pipex_info, exit_code);
+}
 
 void display_error_msg(char *msg, t_error_print type)
 {
@@ -43,8 +49,18 @@ int terminate_pipex(t_pipex *pipex_info, t_returns_exits exit_code)
 	return ((int)exit_code);
 }
 
-int terminate_pipex_with_msg(t_pipex *pipex_info, char *msg, t_returns_exits exit_code, t_error_print type)
+void terminate_pipex_with_msg(t_pipex *pipex_info, char *msg, t_returns_exits exit_code, t_error_print type)
 {
+	close_io_files(&(pipex_info->files));
+	close_all_pipes(&(pipex_info->pipes), 0);
+	display_error_msg(msg, type);
+	exit(terminate_pipex(pipex_info, exit_code));
+}
+
+void term_pipex_pipes_handling(t_pipex *pipex_info, char *msg, t_returns_exits exit_code, t_error_print type)
+{
+	close_io_files(&(pipex_info->files));
+	close_all_pipes_till_index(&(pipex_info->pipes), 0, pipex_info->last_pipe_index);
 	display_error_msg(msg, type);
 	exit(terminate_pipex(pipex_info, exit_code));
 }

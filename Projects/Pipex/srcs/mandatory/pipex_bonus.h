@@ -41,7 +41,7 @@ typedef struct s_io_files {
 typedef struct s_command {
     char        **cmd_args;          // Command arguments (NULL-terminated) like (ls -l -a)
     char        *full_path;      // Resolved absolute path  like (/bin/ls)
-    bool        is_valid;        // Successfully validated command
+    bool        cmd_pers_validation;        // Successfully validated command
 }   t_command;
 
 /**
@@ -74,20 +74,20 @@ typedef struct s_pipex {
     // Input parameters
     int             argc;
     char            **argv;
-    
+
     // System environment
     t_environment   env;
-    
+
     // File management
     t_io_files      files;
-    
+
     // Pipe management
     t_pipe_context  pipes;
-    
+
     // Command execution
     t_command      *commands;
     size_t         num_commands;
-    
+
     // Program state
     int             exit_code;
     bool            has_error;

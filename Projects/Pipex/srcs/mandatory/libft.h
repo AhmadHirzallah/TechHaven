@@ -6,7 +6,7 @@
 /*   By: ahirzall <ahirzall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 17:10:00 by ahirzall          #+#    #+#             */
-/*   Updated: 2025/02/22 17:29:51 by ahirzall         ###   ########.fr       */
+/*   Updated: 2025/03/14 04:48:03 by ahirzall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <stddef.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include "get_next_line.h"
 
 typedef enum e_value_type
 {

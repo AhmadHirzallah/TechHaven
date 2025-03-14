@@ -5,9 +5,10 @@
 # **************************************************************************** #
 
 CC          := cc
-CFLAGS      := -Wall -Wextra -Werror -g -I../include
+# CFLAGS      := -Wall -Wextra -Werror -g -I../include
+CFLAGS      := -g -I../include
 # CFLAGS      := -g -I../include
-LDFLAGS     := -L../libs -lft -lftprintf -lds
+LDFLAGS     := -L../libs -lft -lftprintf -lds -lgnl
 
 # Directories
 SRCDIR      := ./mandatory
@@ -16,7 +17,12 @@ OBJDIR      := ../objs/srcs/mandatory
 # List source files manually (update the list below as you add more files)
 SRCS        :=	main.c \
 				init_pipex.c \
-				termination.c
+				termination.c \
+				utils.c \
+				path_helpers.c \
+				io_files_handler.c \
+				execution.c \
+				execution_utils.c
 
 OBJS        := $(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
 

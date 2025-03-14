@@ -24,7 +24,7 @@ typedef enum e_returns_exits
 /**
  * @enum e_pipe_mode
  * @brief Represents different pipe operation modes
- * 
+ *
  * - PIPEX_MODE_HEREDOC will make the (infile_fd = 0) & take input from user.
  */
 typedef enum e_pipe_mode {
@@ -49,7 +49,7 @@ typedef struct s_io_files {
 typedef struct s_command {
 	char        **cmd_args;          // Command arguments (NULL-terminated) like (ls -l -a)
 	char        *full_path;      // Resolved absolute path  like (/bin/ls)
-	bool        is_valid;        // Successfully validated command
+	bool        cmd_pers_validation;        // Successfully validated command
 }   t_command;
 
 /**
@@ -79,7 +79,7 @@ typedef struct s_environment {
 /**
  * @struct s_pipex
  * @brief Main context container for pipex operations
- *      
+ *
  * - num_commands will be argc-3 (skip 1(./pipex) 2(infile) 3(outfile))
 
  * - env contains raw envp and PATH varaiable splitted inside it !
@@ -89,20 +89,20 @@ typedef struct s_pipex {
 	// Input parameters
 	int             argc;
 	char            **argv;
-	
+
 	// System environment
 	t_environment   env;
-	
+
 	// File management
 	t_io_files      files;
-	
+
 	// Pipe management
 	t_pipe_context  pipes;
-	
+
 	// Command execution
 	t_command      *commands;
 	size_t         num_commands;
-	
+
 	// Program state
 	int             exit_code;
 	bool            has_error;

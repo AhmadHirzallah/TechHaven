@@ -1,11 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   close_all.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ahirzall <ahirzall@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/16 00:30:08 by ahirzall          #+#    #+#             */
+/*   Updated: 2025/03/16 00:30:09 by ahirzall         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex.h"
 
 /*
 ** Closes a single pipe represented by an array of two file descriptors.
 ** It checks if the descriptor is valid (> 2) before calling close.
 */
-void	close_io_pipes(int *pipes_fds)
+void	close_io_pipes(t_pipex *pipex, int *pipes_fds)
 {
+	(void)pipex;
+	// if (pipex->pipex_mode != PIPEX_MODE_HEREDOC && pipes_fds[0] > 2)
 	if (pipes_fds[0] > 2)
 		close(pipes_fds[0]);
 	if (pipes_fds[1] > 2)
@@ -24,7 +38,7 @@ void	close_all_pipes(t_pipex *pipex)
 	while (i < pipex->num_cmds_args - 1)
 	{
 		if (pipex->pipes_fds && pipex->pipes_fds[i])
-			close_io_pipes(pipex->pipes_fds[i]);
+			close_io_pipes(pipex, pipex->pipes_fds[i]);
 		i++;
 	}
 }
@@ -35,9 +49,8 @@ void	close_all_pipes(t_pipex *pipex)
 */
 void	close_all_files(t_pipex *pipex)
 {
-	if (pipex->files.infile_fd >= 0)
+	if (pipex->files.infile_fd > 2)
 		close(pipex->files.infile_fd);
-
-	if (pipex->files.outfile_fd >= 0)
+	if (pipex->files.outfile_fd > 2)
 		close(pipex->files.outfile_fd);
 }

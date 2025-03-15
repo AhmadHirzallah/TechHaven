@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   files.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ahirzall <ahirzall@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/16 00:30:14 by ahirzall          #+#    #+#             */
+/*   Updated: 2025/03/16 00:30:15 by ahirzall         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 #include "pipex.h"
 
-static int get_infile_ready(t_pipex *pipex)
+static int	get_infile_ready(t_pipex *pipex)
 {
 	if (pipex->pipex_mode != PIPEX_MODE_HEREDOC)
 	{
@@ -10,7 +22,7 @@ static int get_infile_ready(t_pipex *pipex)
 			pipex->files.infile_fd = -1;
 			pipex->errno_rtrn = errno;
 			error_msg("ERROR of input file:\t", PERROR);
-			return (pipex->errno_rtrn);
+			return (pipex->errno_rtrn); // 1
 		}
 		else
 			pipex->files.infile_fd = open(pipex->main_pars.argv[1], O_RDONLY);
@@ -19,9 +31,11 @@ static int get_infile_ready(t_pipex *pipex)
 }
 int	get_outfile_ready(t_pipex *pipex)
 {
-	if (access(pipex->main_pars.argv[pipex->main_pars.argc - 1], F_OK) == 0)	// IF FAIL return 1 to terminal
+	if (access(pipex->main_pars.argv[pipex->main_pars.argc - 1], F_OK) == 0)
+		// IF FAIL return 1 to terminal
 	{
-		if (access(pipex->main_pars.argv[pipex->main_pars.argc - 1], W_OK) == -1)
+		if (access(pipex->main_pars.argv[pipex->main_pars.argc - 1], W_OK) ==
+			-1)
 		{
 			pipex->errno_rtrn = errno;
 			error_msg("ERROR in outfile:\t", PERROR);
@@ -30,13 +44,13 @@ int	get_outfile_ready(t_pipex *pipex)
 		}
 	}
 	if (pipex->pipex_mode == PIPEX_MODE_HEREDOC)
-		pipex->files.outfile_fd = open(pipex->main_pars.argv[pipex->main_pars.argc - 1],
-											O_CREAT | O_WRONLY | O_APPEND, 0644);
+		pipex->files.outfile_fd = open(pipex->main_pars.argv[pipex->main_pars.argc
+				- 1], O_CREAT | O_WRONLY | O_APPEND, 0644);
 	else
-		pipex->files.outfile_fd = open(pipex->main_pars.argv[pipex->main_pars.argc - 1],
-											O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	if ((access(pipex->main_pars.argv[pipex->main_pars.argc - 1], F_OK | W_OK) == -1) 
-		|| pipex->files.outfile_fd == -1)
+		pipex->files.outfile_fd = open(pipex->main_pars.argv[pipex->main_pars.argc
+				- 1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	if ((access(pipex->main_pars.argv[pipex->main_pars.argc - 1],
+				F_OK | W_OK) == -1) || pipex->files.outfile_fd == -1)
 	{
 		pipex->files.outfile_fd = -1;
 		pipex->errno_rtrn = errno;

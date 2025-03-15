@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free_all.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ahirzall <ahirzall@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/16 00:30:19 by ahirzall          #+#    #+#             */
+/*   Updated: 2025/03/16 00:30:20 by ahirzall         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "pipex.h"
 #include <stdlib.h>
 #include <unistd.h>
-#include "pipex.h"
 
 /*
 ** Frees the memory allocated for system_paths.

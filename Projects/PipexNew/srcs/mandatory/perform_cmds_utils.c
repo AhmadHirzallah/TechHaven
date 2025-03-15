@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   perform_cmds_utils.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ahirzall <ahirzall@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/16 00:30:26 by ahirzall          #+#    #+#             */
+/*   Updated: 2025/03/16 00:35:04 by ahirzall         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 #include "pipex.h"
 
@@ -16,7 +28,7 @@ int is_valid_cmd_checker(t_pipex *pipex, char *cmd)
 	{
 		pipex->errno_rtrn = errno;
 		return (ERR_CMD_NOT_EXIST);
-	}	
+	}
 	if (access(cmd, R_OK | X_OK) == -1)
 	{
 		pipex->errno_rtrn = errno;
@@ -53,12 +65,16 @@ static int process_general_cmd(t_pipex *pipex, char **cmd_args, char **complete_
 	i = 0;
 	while (pipex->system_paths[i])
 	{
-		(*complete_cmd) = join_cmds_handler(pipex, pipex->system_paths[i], temp_cmd, true);
+		(*complete_cmd) = join_cmds_handler(pipex, pipex->system_paths[i], temp_cmd, false);
 		validation_return = is_valid_cmd_checker(pipex, (*complete_cmd));
 		if (validation_return == OK)
+		{
+			free(temp_cmd);
 			return (OK);
+		}
 		i++;
 	}
+	free(temp_cmd);
 	return ((int)validation_return);
 }
 

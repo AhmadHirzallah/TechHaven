@@ -14,7 +14,7 @@ static int get_infile_ready(t_pipex *pipex_info)
 		else
 			pipex_info->files.infile_fd = open(pipex_info->argv[1], O_RDONLY);
 	}
-	return (OK);
+	return (OK_PRINTF);
 }
 static int	get_outfile_ready(t_pipex *pipex_info)
 {
@@ -33,11 +33,11 @@ static int	get_outfile_ready(t_pipex *pipex_info)
 	else
 		pipex_info->files.outfile_fd = open(pipex_info->argv[pipex_info->argc - 1],
 											O_CREAT | O_WRONLY | O_TRUNC, 0644);
-		return (OK);
+		return (OK_PRINTF);
 }
 int	get_io_files_ready(t_pipex *pipex_info)
 {
 	get_infile_ready(pipex_info);
 	get_outfile_ready(pipex_info);
-	return (OK);
+	return (OK_PRINTF);
 }

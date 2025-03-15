@@ -69,6 +69,6 @@ int	perform_all_cmds(t_pipex *pipex_info)
 	handle_input_piping(pipex_info, i, j);
 	i++;
 	perform_mid_pipes_cmds(pipex_info, i, j);
-	perform_last_cmd(pipex_info, i, j);
+	perform_last_cmd(pipex_info, i, j);	// return status in failure.
 	return 0;
 }

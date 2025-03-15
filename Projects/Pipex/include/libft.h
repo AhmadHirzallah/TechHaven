@@ -16,6 +16,8 @@
 # include <stddef.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include "printf.h"
+# include "get_next_line.h"
 
 typedef enum e_value_type
 {
@@ -760,6 +762,7 @@ short				is_str_space(int chr);
 __int128			ft_atoint128(const char *nptr);
 char				*nbr_to_str(__int128_t nbr);
 size_t				str_cmpr(const char *s1, const char *s2);
-void				free_2d_arr(char **split);
+void				free_2d_arr(char ***arr);
+void				print_2d_arr(char **arr);
 
 #endif

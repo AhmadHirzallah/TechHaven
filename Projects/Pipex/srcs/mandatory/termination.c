@@ -9,7 +9,7 @@ void	termination_with_all_closing(t_pipex *pipex_info, t_returns_exits exit_code
 	terminate_pipex(pipex_info, exit_code);
 }
 
-void display_error_msg(char *msg, t_error_print type)
+void error_msg_termination(char *msg, t_error_print type)
 {
 	if (type == PERROR)
 		perror("\nERROR:\t");
@@ -29,13 +29,18 @@ int terminate_pipex(t_pipex *pipex_info, t_returns_exits exit_code)
 
 	if (pipex_info->pipes.childs_prcs_ids)
 		free(pipex_info->pipes.childs_prcs_ids);
+
+	print_2d_arr(pipex_info->env.system_paths);
+	ft_printf("str: %s\n", pipex_info->env.system_paths[0]);
+
 	if (pipex_info->env.system_paths && pipex_info->env.system_paths[0])
-		free_2d_arr(pipex_info->env.system_paths);
+		free_2d_arr(&pipex_info->env.system_paths);
 	i = 0;
 	while (i < pipex_info->num_commands)
 	{
 		// if (pipex_info->commands[i].cmd_args && pipex_info->commands[i].cmd_args[0])
-		free_2d_arr(pipex_info->commands[i].cmd_args);
+		// print_2d_arr(pipex_info->commands[i].cmd_args);
+		free_2d_arr(&pipex_info->commands[i].cmd_args);
 		if (pipex_info->commands[i].full_path != NULL)
 			free(pipex_info->commands[i].full_path);
 		i++;

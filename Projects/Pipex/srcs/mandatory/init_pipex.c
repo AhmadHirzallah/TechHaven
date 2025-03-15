@@ -35,9 +35,12 @@ int	get_cmdline_args(t_pipex *pipex_info)
 		terminate_pipex_with_msg(pipex_info, "ERROR: Fail in Command's CALLOC !",
 									 ERR_FAIL_CALLOC_CMDS, FD2);
 
-	i = 2;
-	while (i < (pipex_info->argc - 1))
-		process_any_cmd(pipex_info, &i);
+	i = 0;
+	while (i < (pipex_info->num_commands))
+	{
+		process_any_cmd(pipex_info, i);
+		i++;
+	}
 	// print_2d_arr(pipex_info->commands->cmd_args);
 	return ((int) OK);
 }
@@ -59,7 +62,12 @@ int	 pipe_on_pipes_fds(t_pipex *pipex_info)
 									 ERR_FAIL_CREATING_PIPE, FD2);
 	i = 0;
 	while (i < pipex_info->pipes.num_pipes)	/// ADD PROTECTION
-		pipex_info->pipes.pipes_fds[i++] = ft_calloc(2, sizeof(int));
+	{
+		pipex_info->pipes.pipes_fds[i] = ft_calloc(2, sizeof(int));
+		if (pipex_info->pipes.pipes_fds[i++] == NULL)
+		terminate_pipex_with_msg(pipex_info, "ERROR Specification: Fail in creating pipe() !\n",
+								 ERR_FAIL_CREATING_PIPE, BOTH_FD2_PERROR);
+	}
 	i = 0;
 	while (i < pipex_info->pipes.num_pipes)
 	{
@@ -68,7 +76,6 @@ int	 pipe_on_pipes_fds(t_pipex *pipex_info)
 			pipex_info->last_pipe_index = i;
 			terminate_pipex_with_msg(pipex_info, "ERROR Specification: Fail in creating pipe() !\n",
 									 ERR_FAIL_CREATING_PIPE, BOTH_FD2_PERROR);
-
 		}
 		i++;
 	}

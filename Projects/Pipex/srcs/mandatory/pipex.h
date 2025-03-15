@@ -71,7 +71,8 @@ typedef enum e_commands_permissions
 {
 	PERMISSIONS_OK = -1,
 	PER_NOT_EXIST_F_NOK = 1,
-	PER_NOT_X_R_NOK = 2
+	PER_NOT_X_R_NOK = 2,
+	PER_CHECK_LATER = 4
 }						t_commands_permissions;
 
 /**
@@ -159,7 +160,7 @@ void		close_all_pipes(t_pipe_context *pipex_info, int i);
 void		close_io_files(t_io_files *files);
 int			peform_io_dble_dup2(int in_stream, int out_stream);
 int			is_valid_cmd_check(t_pipex *pipex_info, char *full_path_cmd, t_command **commands);
-int			process_any_cmd(t_pipex *pipex_info, int *i);
+int			process_any_cmd(t_pipex *pipex_info, int i);
 int			get_io_files_ready(t_pipex *pipex_info);
 void		close_all_pipes_till_index(t_pipe_context *pipex_info, int i, int end);
 void		termination_with_all_closing(t_pipex *pipex_info, t_returns_exits exit_code, int i);
@@ -168,8 +169,8 @@ int			terminate_pipex(t_pipex *pipex_info, t_returns_exits exit_code);
 void		terminate_pipex_with_msg(t_pipex *pipex_info, char *msg, t_returns_exits exit_code, t_error_print type);
 void		term_pipex_pipes_handling(t_pipex *pipex_info, char *msg, t_returns_exits exit_code, t_error_print type);
 void		execute_cmd(t_pipex *pipex_info, int i);
-
-
+char		*get_executable_cmd(t_pipex *pipex_info, char *system_path, char *cmd);
+void		input_here_doc(t_pipex *pipex_info, int i);
 
 #endif
 /*

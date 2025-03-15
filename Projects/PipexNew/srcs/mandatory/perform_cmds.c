@@ -10,7 +10,7 @@ int execute_a_cmd(t_pipex *pipex, char **cmd_args, int i)
 		if (access(complete_cmd, X_OK) == 0)
 			execve(complete_cmd, cmd_args, pipex->main_pars.raw_envp);
 	}
-	error_msg_termination("Invalid Command.\n", FD2, is_valid_cmd_checker(pipex, complete_cmd));
+	error_msg_termination(pipex, "Invalid Command.\n", FD2, is_valid_cmd_checker(pipex, complete_cmd));
 	return (is_valid_cmd_checker(pipex, complete_cmd));
 }
 
@@ -22,7 +22,7 @@ int	handle_input_cmd(t_pipex *pipex, int i)
 	if (pipex->childs_pids[i] == -1)
 	{
 		pipex->errno_rtrn = errno;
-		error_msg_termination("ERROR: forking for infile cmd failed :(.\n", PERROR, errno);
+		error_msg_termination(pipex, "ERROR: forking for infile cmd failed :(.\n", PERROR, errno);
 	}
 	if (pipex->childs_pids[i] == 0)
 	{
@@ -45,33 +45,24 @@ int	handle_here_doc(t_pipex *pipex, int i)
 	if (pipex->childs_pids[i] == 0)
 	{
 		input_here_doc(pipex);
-		close_io_pipes(pipex->pipes_fds[0]);	// close all pipes also for this child
-		close(pipex->files.outfile_fd);
-		error_msg_termination("", STDOUT_FILENO, OK);
+		cleanup_pipex(pipex);
+		exit(OK);
 	}
 	return (OK);
 }
 
 int perform_middle_pipes_cmds(t_pipex *pipex, int i)
 {
-	int j;
-
 	while (i < pipex->num_cmds_args - 1)
 	{
 		pipex->childs_pids[i] = fork();
 		if (pipex->childs_pids[i] == -1)
-			error_msg_termination("Failed in forking middle child.\n", PERROR, errno);
+			error_msg_termination(pipex, "Failed in forking middle child.\n", PERROR, errno);
 		if (pipex->childs_pids[i] == 0)
 		{
-			pipex->errno_rtrn = perform_both_io_dup2(pipex->pipes_fds[i - 1][0], pipex->pipes_fds[i][1]);
-			if (pipex->errno_rtrn != OK)
-				return (i);
-			j = 0;
-			while (j < pipex->num_cmds_args - 1)
-			{
-				close_io_pipes(pipex->pipes_fds[j]);
-				j++;
-			}
+			pipex->errno_rtrn = perform_both_io_dup2(pipex, pipex->pipes_fds[i - 1][0], pipex->pipes_fds[i][1]);
+			close_all_pipes(pipex);
+			close_all_files(pipex);
 			execute_a_cmd(pipex, pipex->cmds_args[i], 0);
 		}
 		i++;
@@ -81,28 +72,17 @@ int perform_middle_pipes_cmds(t_pipex *pipex, int i)
 
 int perform_last_cmd(t_pipex *pipex, int i)
 {
-	int j;
-
 	i = pipex->num_cmds_args - 1;
 	pipex->childs_pids[i] = fork();
 	if (pipex->childs_pids[i] == -1)
-		error_msg_termination("Failed in forking last child.\n", PERROR, errno);
+		error_msg_termination(pipex, "Failed in forking last child.\n", PERROR, errno);
 	if (pipex->childs_pids[i] == 0)
 	{
 		if (pipex->files.outfile_fd == -1)
-		{
-			close_io_pipes(pipex->pipes_fds[i]);
-			error_msg_termination("Failed in last cmd.\n", PERROR, get_outfile_ready(pipex));
-		}
-		pipex->errno_rtrn = perform_both_io_dup2(pipex->pipes_fds[i - 1][0], pipex->files.outfile_fd);
-		if (pipex->errno_rtrn != OK)
-			error_msg_termination("Failed in dup2 in last child.\n", PERROR, errno);
-		j = 0;
-		while (j < pipex->num_cmds_args - 1)
-		{
-			close_io_pipes(pipex->pipes_fds[j]);	// also close files !
-			j++;
-		}
+			error_msg_termination(pipex, "Failed in last cmd.\n", PERROR, get_outfile_ready(pipex));
+		pipex->errno_rtrn = perform_both_io_dup2(pipex, pipex->pipes_fds[i - 1][0], pipex->files.outfile_fd);
+		close_all_pipes(pipex);
+		close_all_files(pipex);
 		execute_a_cmd(pipex, pipex->cmds_args[i], 0);
 	}
 	return (OK);

@@ -25,13 +25,3 @@ void error_msg_termination(t_pipex *pipex, char *msg, t_error_print type, int ex
 	cleanup_pipex(pipex);
 	exit(exit_code);
 }
-
-void	close_io_pipes(int *pipes_fds)
-{
-	if (pipes_fds[0] > 2)
-		close(pipes_fds[0]);
-	if (pipes_fds[1] > 2)
-		close(pipes_fds[1]);
-}
-
-

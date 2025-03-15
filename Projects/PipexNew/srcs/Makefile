@@ -25,7 +25,8 @@ OBJDIR      := ../objs/srcs/mandatory
 # 				execution_utils.c
 
 SRCS        :=	cmds_args.c	initialization.c  perform_cmds.c		pipe.c		termination.c\
-				files.c		main.c		perform_cmds_utils.c		utils.c		free_all.c
+				files.c		main.c		perform_cmds_utils.c		utils.c		free_all.c \
+				close_all.c
 
 OBJS        := $(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
 

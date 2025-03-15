@@ -26,6 +26,7 @@ typedef enum e_returns_exits
 	OK = 0,
 	ERR_OUTFILE,
 	ERR_WRNG_ARGS_NBR,
+	HERE_DOC_STOP,
 	ERR_FAIL_CREATING_PIPE,
 	ERR_FAIL_STRJOIN_CMDS,
 	ERR_FAIL_IN_FORKING_HEREDOC,
@@ -184,9 +185,10 @@ void		free_cmds_args(t_pipex *pipex);
 void		free_system_paths(t_pipex *pipex);
 void		close_all_files(t_pipex *pipex);
 void		close_all_pipes(t_pipex *pipex);
-void		close_io_pipes(int *pipes_fds);
 void		error_msg_termination(t_pipex *pipex, char *msg, t_error_print type, int exit_code);
-char		*join_cmds_handler(t_pipex *pipex, char const *s1, char const *s2, bool free_s2);
+char		*join_cmds_handler(t_pipex *pipex, char *s1, char *s2, bool free_s2);
+int			process_here_doc_line(t_pipex *pipex);
+void		close_io_pipes(int *pipes_fds);
 
 
 

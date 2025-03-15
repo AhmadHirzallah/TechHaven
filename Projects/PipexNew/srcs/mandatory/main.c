@@ -39,44 +39,53 @@ int	perform_all_cmds(t_pipex *pipex)
 	if (pipex->pipex_mode == PIPEX_MODE_INFILE)
 		handle_input_cmd(pipex, i);
 	else if (pipex->pipex_mode == PIPEX_MODE_HEREDOC)
-		input_here_doc(pipex);
+		handle_here_doc(pipex, i);
 	i++;
 	perform_middle_pipes_cmds(pipex, i);
-	perform_last_cmd(pipex, i);	// return status in failure.
+	perform_last_cmd(pipex, i);
+	close_all_pipes(pipex);
+	close_all_files(pipex);
+	return (OK);
+}
+
+int	parent_wait_for_all(t_pipex *pipex)
+{
+	int			i;
+	int			waitpid_status;
+
 	i = 0;
 	while (i < pipex->num_cmds_args - 1)
 	{
-		close_io_pipes(pipex->pipes_fds[i]);
+		waitpid(pipex->childs_pids[i], NULL, 0);
 		i++;
 	}
-	return 0;
+	waitpid(pipex->childs_pids[i], &waitpid_status, 0);
+	if (WIFEXITED(waitpid_status))
+	{
+		cleanup_pipex(pipex);
+		exit (WEXITSTATUS(waitpid_status));
+	}
+	cleanup_pipex(pipex);
+	exit (WTERMSIG(waitpid_status) + 128);
 }
-
 
 int	main(int argc, char **argv, char **envp)
 {
 	t_pipex		pipex;
-	int			i;
-	int			waitpid_status;
 
 	ft_bzero(&pipex, sizeof(t_pipex));
 	if (argc >= 4)
 	{
 		initialize_pipex(&pipex, argc, argv, envp);
 		perform_all_cmds(&pipex);
-		i = 0;
-		while (i < pipex.num_cmds_args - 1)
-		{
-			waitpid(pipex.childs_pids[i], NULL, 0);
-			i++;
-		}
-		waitpid(pipex.childs_pids[pipex.num_cmds_args - 1], &waitpid_status, 0);
-		// free_evey_thing(&pipex);
-		if (WIFEXITED(waitpid_status))
-			return (WEXITSTATUS(waitpid_status));
-		return (WTERMSIG(waitpid_status) + 128);
+		parent_wait_for_all(&pipex);
 	}
-
+	else
+	{
+		error_msg("ERROR: Wrong number of arguments !!\n", FD2);
+		return (ERR_WRNG_ARGS_NBR);
+	}
+	return (OK);
 
 
 
@@ -148,10 +157,5 @@ int	main(int argc, char **argv, char **envp)
 
 
 	// }
-	// else
-	// {
-	// 	// display_error_msg("ERROR: Wrong number of arguments !!\n", FD2);
-	// 	// return (1);
-	// }
-	// return (0);
+
 }

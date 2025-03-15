@@ -167,7 +167,6 @@ void		error_msg(char *msg, t_error_print type);
 int			get_io_files_ready(t_pipex *pipex);
 int			open_pipes(t_pipex *pipex, int i);
 int			handle_input_cmd(t_pipex *pipex, int i);
-void		close_io_pipes(int *pipes_fds);
 void		input_here_doc(t_pipex *pipex);
 int			perform_both_io_dup2(t_pipex *pipex, int in_stream, int out_stream);
 int			processing_cmd_args(t_pipex *pipex, char *cmd_args, char **complete_cmd, int i);

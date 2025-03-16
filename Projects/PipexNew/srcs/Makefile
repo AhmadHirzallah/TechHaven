@@ -6,78 +6,82 @@
 
 CC          := cc
 CFLAGS      := -Wall -Wextra -Werror -g -I../include
-# CFLAGS      := -g -I../include
-# CFLAGS      := -g -I../include
 LDFLAGS     := -L../libs -lft -lftprintf -lds -lgnl
+LDFLAGS_BONUS := -L../libs -lftprintf -lft -lds -lgnl
 
-# Directories
-SRCDIR      := ./mandatory
-OBJDIR      := ../objs/srcs/mandatory
+SRCDIR            := ./mandatory
+SRC_BONUS_DIR     := ./bonus
+OBJDIR            := ../objs/srcs/mandatory
+OBJDIR_BONUS      := ../objs/srcs/bonus
 
-# List source files manually (update the list below as you add more files)
-# SRCS        :=	main.c \
-# 				init_pipex.c \
-# 				termination.c \
-# 				utils.c \
-# 				path_helpers.c \
-# 				io_files_handler.c \
-# 				execution.c \
-# 				execution_utils.c
+SRCS := \
+	close_all.c \
+	cmds_args.c \
+	files.c \
+	free_all.c \
+	initialization.c \
+	main.c \
+	perform_cmds.c \
+	perform_cmds_utils.c \
+	pipe.c \
+	termination.c \
+	utils.c
 
-SRCS        :=	cmds_args.c	initialization.c  perform_cmds.c		pipe.c		termination.c\
-				files.c		main.c		perform_cmds_utils.c		utils.c		free_all.c \
-				close_all.c
+SRCS_BONUS := \
+	close_all_bonus.c \
+	cmds_args_bonus.c \
+	files_bonus.c \
+	free_all_bonus.c \
+	initialization_bonus.c \
+	main_bonus.c \
+	perform_cmds_bonus.c \
+	perform_cmds_utils_bonus.c \
+	pipe_bonus.c \
+	termination_bonus.c \
+	utils_bonus.c
 
 OBJS        := $(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
+OBJS_BONUS  := $(addprefix $(OBJDIR_BONUS)/, $(SRCS_BONUS:.c=.o))
 
-
-
-
-# # Manually list object files corresponding to each source file
-# OBJS        := $(OBJDIR)/main.o  $(OBJDIR)/init_pipex.o
-
-
-
-
-# Final executable (placed in the parent directory)
-TARGET      := ../pipex
-
-
-
+TARGET       := ../pipex
+BONUS_TARGET := ../pipex_bonus
 
 all: $(TARGET)
 
-
-
+bonus: $(BONUS_TARGET)
 
 $(TARGET): $(OBJS)
-	@$(CC) $(CFLAGS) $(^) $(LDFLAGS) -o $(@)
-	@echo "Executable $(@) built successfully."
+	@$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
+	@echo "Executable $(TARGET) built successfully."
 
-# Rule to compile each source file into an object file
 $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-# $(OBJDIR)/main.o: $(SRCDIR)/main.c | $(OBJDIR)
-# 	@$(CC) $(CFLAGS) -c $(SRCDIR)/main.c -o $(OBJDIR)/main.o
-
-# $(OBJDIR)/ft_get_path_var.o: $(SRCDIR)/get_path_var.c | $(OBJDIR)
-# 	@$(CC) $(CFLAGS) -c $(SRCDIR)/ft_get_path_var.c -o $(OBJDIR)/ft_get_path_var.o
-
-$(OBJDIR)/initialize_pipex.o: $(SRCDIR)/initialize_pipex.c | $(OBJDIR)
-	@$(CC) $(CFLAGS) -c $(SRCDIR)/initialize_pipex.c -o $(OBJDIR)/initialize_pipex.o
-
 $(OBJDIR):
-	@mkdir -p $(OBJDIR)
+	mkdir -p $(OBJDIR)
+
+$(BONUS_TARGET): $(OBJS_BONUS)
+	@$(CC) $(CFLAGS) $^ $(LDFLAGS_BONUS) -o $@
+	@echo "Executable $(BONUS_TARGET) built successfully."
+
+$(OBJDIR_BONUS)/%.o: $(SRC_BONUS_DIR)/%.c | $(OBJDIR_BONUS)
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJDIR_BONUS):
+	mkdir -p $(OBJDIR_BONUS)
 
 clean:
-	@rm -rf $(OBJS)
+	@rm -f $(OBJS)
+	@rm -f $(OBJS_BONUS)
 	@echo "Object files cleaned."
 
 fclean: clean
-	@rm -rf $(TARGET)
-	@echo "Executable cleaned."
+	@rm -f $(TARGET)
+	@rm -f $(BONUS_TARGET)
+	@echo "Executables cleaned."
 
 re: fclean all
 
-.PHONY: all clean fclean re bonus
+re_bonus: fclean bonus
+
+.PHONY: all bonus clean fclean re re_bonus

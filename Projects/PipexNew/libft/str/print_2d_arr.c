@@ -10,17 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stddef.h>
-#include "libft.h"
 #include "ft_printf.h"
+#include "libft.h"
+#include <stddef.h>
 
-void print_2d_arr(char **arr)
+void	print_2d_arr(char **arr)
 {
-    size_t i = 0;
+	size_t	i;
 
-    while (arr[i] != NULL)
-    {
-        ft_printf("{%s}\n", arr[i]);
-        i++;
-    }
+	i = 0;
+	while (arr[i] != NULL)
+	{
+		ft_printf("{%s}\n", arr[i]);
+		i++;
+	}
 }

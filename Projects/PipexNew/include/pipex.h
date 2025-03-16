@@ -1,31 +1,32 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipex.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ahirzall <ahirzall@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/16 00:33:55 by ahirzall          #+#    #+#             */
+/*   Updated: 2025/03/16 01:03:40 by ahirzall         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PIPEX_H
 # define PIPEX_H
 
-# include <unistd.h>
-# include <stdbool.h>
-# include <sys/types.h>
-# include <fcntl.h>
 # include "get_next_line.h"
 # include <errno.h>
+# include <fcntl.h>
+# include <stdbool.h>
+# include <sys/types.h>
 # include <sys/wait.h>
+# include <unistd.h>
 
-
-/* ---------------------------- IMPROVEMENTS ----------------------------- */
-/* 1. Added header guards with proper indentation                          */
-/* 2. Added necessary headers                                              */
-/* 3. Using precise types (pid_t instead of int)                           */
-/* 4. Better organization with comments                                    */
-/* 5. Added documentation comments                                         */
-/* 6. More semantic naming                                                 */
-/* 7. Added safety features (array sizes)                                  */
-/* ------------------------------------------------------------------------ */
-
-// cmd not found 127		// found but no -x : 126 	// infile outfile 1
 typedef enum e_returns_exits
 {
 	OK = 0,
 	ERR_OUTFILE,
 	ERR_WRNG_ARGS_NBR,
+	HERE_DOC_STOP,
 	ERR_FAIL_CREATING_PIPE,
 	ERR_FAIL_STRJOIN_CMDS,
 	ERR_FAIL_IN_FORKING_HEREDOC,
@@ -44,7 +45,7 @@ typedef enum e_returns_exits
 	ERR_FAIL_CALLOC_CHILD_PIDS = -2,
 	ERR_FAIL_STRJOIN_MALLOC = -2,
 	ERR_IN_GNL_MALLOC = -2
-}           t_returns_exits;
+}					t_returns_exits;
 
 typedef enum e_error_print
 {
@@ -52,8 +53,7 @@ typedef enum e_error_print
 	FD2,
 	BOTH_FD2_PERROR,
 	FD1
-}	t_error_print;
-
+}					t_error_print;
 
 /**
  * @enum e_pipe_mode
@@ -61,10 +61,11 @@ typedef enum e_error_print
  *
  * - PIPEX_MODE_HEREDOC will make the (infile_fd = 0) & take input from user.
  */
-typedef enum e_pipe_mode {
+typedef enum e_pipe_mode
+{
 	PIPEX_MODE_INFILE,
 	PIPEX_MODE_HEREDOC
-}   t_pipe_mode;
+}					t_pipe_mode;
 
 // /**
 //  * @struct s_io_files
@@ -72,9 +73,9 @@ typedef enum e_pipe_mode {
 //  */
 typedef struct s_io_files
 {
-	int         infile_fd;
-	int         outfile_fd;
-}   t_io_files;
+	int				infile_fd;
+	int				outfile_fd;
+}					t_io_files;
 
 typedef enum e_commands_permissions
 {
@@ -82,7 +83,7 @@ typedef enum e_commands_permissions
 	PER_NOT_EXIST_F_NOK = 1,
 	PER_NOT_X_R_NOK = 2,
 	PER_CHECK_LATER = 4
-}						t_commands_permissions;
+}					t_commands_permissions;
 
 /**
  * @struct s_command
@@ -90,10 +91,9 @@ typedef enum e_commands_permissions
  */
 typedef struct s_command
 {
-	char        			**cmd_args;          // Command arguments (NULL-terminated) like (ls -l -a)
-	char					**env_bins_paths;
-	// t_commands_permissions	cmd_pers_validation;        // Successfully validated command
-}   t_command;
+	char			**cmd_args;
+	char			**env_bins_paths;
+}					t_command;
 
 /**
  * @struct s_environment
@@ -101,10 +101,10 @@ typedef struct s_command
  */
 typedef struct s_main_env_pars
 {
-	int             argc;
-	char            **argv;
-	char        	**raw_envp;       // Original environment variables
-}   t_main_env_pars;
+	int				argc;
+	char			**argv;
+	char			**raw_envp;
+}					t_main_env_pars;
 
 /**
  * @struct s_pipexredirection, the exit status is greater than zero
@@ -115,88 +115,68 @@ typedef struct s_main_env_pars
  * - env contains raw envp and PATH varaiable splitted inside it !
 
  */
-typedef struct s_pipex 
+typedef struct s_pipex
 {
-	t_main_env_pars		main_pars;
-	t_pipe_mode			pipex_mode;            // Operation mode
-	const char			*heredoc_delim;  // Needed for heredoc parsing
-	char        		**system_paths;  // Parsed PATH directories
-	char				***cmds_args;
-	int					num_cmds_args;
-	t_io_files   	   files;
-	int					**pipes_fds;
-	int					*childs_pids;
-	int					errno_rtrn;
-	
+	t_main_env_pars	main_pars;
+	t_pipe_mode		pipex_mode;
+	const char		*heredoc_delim;
+	char			**system_paths;
+	char			***cmds_args;
+	int				num_cmds_args;
+	t_io_files		files;
+	int				**pipes_fds;
+	int				*childs_pids;
+	int				errno_rtrn;
+}					t_pipex;
 
-	
-	// size_t				num_commands;
-	// size_t			num_pipes;
-	
-	// const char  *shell_path_var;     // Absolute path to current shell
+void				process_characteristics(t_pipex *pipex);
+char				**extract_all_paths(t_pipex *pipex);
+char				***get_cmds_args(t_pipex *pipex, int i);
+void				error_msg(char *msg, t_error_print type);
+int					get_io_files_ready(t_pipex *pipex);
+int					open_pipes(t_pipex *pipex, int i);
+int					handle_input_cmd(t_pipex *pipex, int i);
+void				input_here_doc(t_pipex *pipex);
+int					perform_both_io_dup2(t_pipex *pipex, int in_stream,
+						int out_stream);
+int					processing_cmd_args(t_pipex *pipex, char *cmd_args,
+						char **complete_cmd, int i);
+int					is_valid_cmd_checker(t_pipex *pipex, char *cmd);
+int					get_outfile_ready(t_pipex *pipex);
+int					perform_last_cmd(t_pipex *pipex, int i);
+int					perform_middle_pipes_cmds(t_pipex *pipex, int i);
+int					handle_input_cmd(t_pipex *pipex, int i);
+int					handle_here_doc(t_pipex *pipex, int i);
+void				cleanup_pipex(t_pipex *pipex);
+void				free_childs_pids(t_pipex *pipex);
+void				free_pipes_fds(t_pipex *pipex);
+void				free_cmds_args(t_pipex *pipex);
+void				free_system_paths(t_pipex *pipex);
+void				close_all_files(t_pipex *pipex);
+void				close_all_pipes(t_pipex *pipex);
+void				error_msg_termination(t_pipex *pipex, char *msg,
+						t_error_print type, int exit_code);
+char				*join_cmds_handler(t_pipex *pipex, char *s1, char *s2,
+						bool free_s2);
+int					process_here_doc_line(t_pipex *pipex);
+void				close_io_pipes(t_pipex *pipex, int *pipes_fds);
 
+#endif
 
-
-	// Input parameters
-
-	// System environment
-	// t_environment   env;
-
-
-
-	// File management
-
-	// Pipe management
-	// t_pipe_context  pipes;
-
-	// Command execution
-	// t_command      *commands;
-
-	// Program state
-	// int             exit_code;
-	// bool            has_error;
-	// int				last_pipe_index;
-}   t_pipex;
-
-
-
-void		process_characteristics(t_pipex *pipex);
-char		**extract_all_paths(t_pipex *pipex);
-char		***get_cmds_args(t_pipex *pipex, int i);
-void		error_msg(char *msg, t_error_print type);
-int			get_io_files_ready(t_pipex *pipex);
-int			open_pipes(t_pipex *pipex, int i);
-int			handle_input_cmd(t_pipex *pipex, int i);
-void		input_here_doc(t_pipex *pipex);
-int			perform_both_io_dup2(t_pipex *pipex, int in_stream, int out_stream);
-int			processing_cmd_args(t_pipex *pipex, char *cmd_args, char **complete_cmd, int i);
-int			is_valid_cmd_checker(t_pipex *pipex, char *cmd);
-int			get_outfile_ready(t_pipex *pipex);
-int			perform_last_cmd(t_pipex *pipex, int i);
-int			perform_middle_pipes_cmds(t_pipex *pipex, int i);
-int			handle_input_cmd(t_pipex *pipex, int i);
-int			handle_here_doc(t_pipex *pipex, int i);
-void		cleanup_pipex(t_pipex *pipex);
-void		free_childs_pids(t_pipex *pipex);
-void		free_pipes_fds(t_pipex *pipex);
-void		free_cmds_args(t_pipex *pipex);
-void		free_system_paths(t_pipex *pipex);
-void		close_all_files(t_pipex *pipex);
-void		close_all_pipes(t_pipex *pipex);
-void		close_io_pipes(int *pipes_fds);
-void		error_msg_termination(t_pipex *pipex, char *msg, t_error_print type, int exit_code);
-int			join_cmds_handler(t_pipex *pipex, char const *s1, char const *s2);
+/*
+typedef enum e_close_specifying
+{
+	CLOSE_IN_FILE,
+	CLOSE_OUT_FILE,
+	CLOSE_IO_FILES,
+	CLOSE_IN_PIPE_FD,
+	CLOSE_OUT_PIPE_FD,
+	CLOSE_IO_PIPE
+}					t_error_print;
 
 
-
-
-
-
-
-
-
-
-// int			initialize_pipex(t_pipex *pipex_info ,int argc, char **argv, char **envp);
+// int			initialize_pipex(t_pipex *pipex_info ,int argc, char **argv,
+				// char **envp);
 // int			get_path_var_and_paths(t_pipex *pipex_info);
 // int			get_cmdline_args(t_pipex *pipex_info);
 // int			pipe_on_pipes_fds(t_pipex *pipex_info);
@@ -208,28 +188,22 @@ int			join_cmds_handler(t_pipex *pipex, char const *s1, char const *s2);
 // void		close_all_pipes(t_pipe_context *pipex_info, int i);
 // void		close_io_files(t_io_files *files);
 // int			peform_io_dble_dup2(int in_stream, int out_stream);
-// int			is_valid_cmd_check(t_pipex *pipex_info, char *full_path_cmd, t_command **commands);
+// int			is_valid_cmd_check(t_pipex *pipex_info, char *full_path_cmd,
+				t_command **commands);
 // int			process_any_cmd(t_pipex *pipex_info, int i);
 // int			get_io_files_ready(t_pipex *pipex_info);
-// void		close_all_pipes_till_index(t_pipe_context *pipex_info, int i, int end);
-// void		termination_with_all_closing(t_pipex *pipex_info, t_returns_exits exit_code, int i);
+// void		close_all_pipes_till_index(t_pipe_context *pipex_info, int i,
+			int end);
+// void		termination_with_all_closing(t_pipex *pipex_info,
+			t_returns_exits exit_code, int i);
 // void		display_error_msg(char *msg, t_error_print type);
 // int			terminate_pipex(t_pipex *pipex_info, t_returns_exits exit_code);
-// void		terminate_pipex_with_msg(t_pipex *pipex_info, char *msg, t_returns_exits exit_code, t_error_print type);
-// void		term_pipex_pipes_handling(t_pipex *pipex_info, char *msg, t_returns_exits exit_code, t_error_print type);
+// void		terminate_pipex_with_msg(t_pipex *pipex_info, char *msg,
+			t_returns_exits exit_code, t_error_print type);
+// void		term_pipex_pipes_handling(t_pipex *pipex_info, char *msg,
+			t_returns_exits exit_code, t_error_print type);
 // void		execute_cmd(t_pipex *pipex_info, int i);
-// char		*get_executable_cmd(t_pipex *pipex_info, char *system_path, char *cmd);
+// char		*get_executable_cmd(t_pipex *pipex_info, char *system_path,
+			char *cmd);
 // void		input_here_doc(t_pipex *pipex_info, int i);
-
-#endif
-/*
-typedef enum e_close_specifying
-{
-	CLOSE_IN_FILE,
-	CLOSE_OUT_FILE,
-	CLOSE_IO_FILES,
-	CLOSE_IN_PIPE_FD,
-	CLOSE_OUT_PIPE_FD,
-	CLOSE_IO_PIPE
-}   t_error_print;
 */

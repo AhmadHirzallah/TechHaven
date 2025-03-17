@@ -1,9 +1,0 @@
-{
-	"files.associations": {
-		"libft.h": "c",
-		"sstream": "c",
-		"pipex.h": "c",
-		"cstdio": "c",
-		"get_next_line.h": "c"
-	}
-}

@@ -1,0 +1,43 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug program",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/program",  // Path to the compiled executable
+            "args": [],  // Add any program arguments here
+            "stopAtEntry": false,  // Set to true if you want to stop at the entry point of the program
+            "cwd": "${workspaceFolder}",  // Current working directory (should be where the executable is located)
+            "environment": [],
+            "externalConsole": true,  // Set to true to launch in a new terminal
+            "MIMode": "gdb",  // Using gdb for debugging
+            "miDebuggerPath": "/usr/bin/gdb",  // Path to gdb (adjust if it's located somewhere else)
+            "preLaunchTask": "build-project",  // Runs the build task before launching the program
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Ask whether to follow parent or child",
+                    "text": "set follow-fork-mode ask",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Stop both parent and child processes",
+                    "text": "set detach-on-fork off",
+                    "ignoreFailures": true
+                }
+            ],
+            "miDebuggerArgs": "",
+            "logging": {
+                "moduleLoad": false,
+                "programOutput": true,
+                "trace": true,
+                "traceResponse": true
+            }
+        }
+    ]
+}

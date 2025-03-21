@@ -59,19 +59,21 @@ int	mlx_pixel_put(void *mlx_ptr, void *win_ptr, int x, int y, int color);
 /*
 ** Image stuff
 */
-
-void	*mlx_new_image(void *mlx_ptr,int width,int height);
 /*
 **  return void *0 if failed
 **  obsolete : image2 data is stored using bit planes
 **  void	*mlx_new_image2(void *mlx_ptr,int width,int height);
 */
-char	*mlx_get_data_addr(void *img_ptr, int *bits_per_pixel,
-			   int *size_line, int *endian);
+void	*mlx_new_image(void *mlx_ptr,int width,int height);
+
 /*
 **  endian : 0 = sever X is little endian, 1 = big endian
 **  for mlx_new_image2, 2nd arg of mlx_get_data_addr is number_of_planes
 */
+char	*mlx_get_data_addr(void *img_ptr, int *bits_per_pixel,
+			   int *size_line, int *endian);
+
+
 int	mlx_put_image_to_window(void *mlx_ptr, void *win_ptr, void *img_ptr,
 				int x, int y);
 int	mlx_get_color_value(void *mlx_ptr, int color);

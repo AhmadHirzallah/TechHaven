@@ -69,12 +69,23 @@ typedef struct	s_var
 
 void	my_pixel_put(t_img *img, int x, int y, int color)
 {
-	int	offset;
+    char    *pixel;
+					// img ptr      get wanted pixel line        get wanted pixel position in line (For Jumping by Nbr Of Bytes)
+    pixel = img->img_pixels_ptr +   ((y * img->line_len)     +   (x * (img->bits_per_pixel / 8)));
+    *(int *)pixel = color;
+    /*
+    
+        - Same as doing this:
+        Code:
 
-	//🚨 Line len is in bytes. WIDTH 800 len_line ~3200 (can differ for alignment)
-	offset = (img->line_len * y) + (x * (img->bits_per_pixel / 8));
+        int	offset;
 
-	*((unsigned int *)(offset + img->img_pixels_ptr)) = color;
+        //🚨 Line len is in bytes. WIDTH 800 len_line ~3200 (can differ for alignment)
+        offset = (img->line_len * y) + (x * (img->bits_per_pixel / 8));
+
+        *((unsigned int *)(offset + img->img_pixels_ptr)) = color;
+
+    */
 }
 
 /*
